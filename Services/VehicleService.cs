@@ -7,16 +7,21 @@ namespace ProyectoFinalTecWeb.Services
     public class VehicleService : IVehicleService
     {
         private readonly IVehicleRepository _vehicles;
+        private readonly IModelRepository _models;
+        private readonly IDriverRepository _drivers;
 
-        public VehicleService(IVehicleRepository vehicles)
+        public VehicleService(IVehicleRepository vehicles, IModelRepository models, IDriverRepository drivers)
         {
             _vehicles = vehicles;
+            _models = models;
+            _drivers = drivers;
         }
         public async Task<Guid> CreateAsync(CreateVehicleDto dto)
         {
-            var entity = new Vehicle { Plate = dto.Plate };
+            var entity = new Vehicle { ModelId = dto.ModelId, DriverId = dto.DriverId ,Plate = dto.Plate};
             await _vehicles.AddAsync(entity);
             await _vehicles.SaveChangesAsync();
+
             return entity.Id;
         }
 

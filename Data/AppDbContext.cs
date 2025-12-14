@@ -11,7 +11,7 @@ namespace ProyectoFinalTecWeb.Data
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
         public DbSet<Trip> Trips => Set<Trip>();
-        public DbSet<Driver> Driveres => Set<Driver>();
+        public DbSet<Driver> Drivers => Set<Driver>();
         public DbSet<Passenger> Passengers => Set<Passenger>();
         public DbSet<Vehicle> Vehicles => Set<Vehicle>();
         public DbSet<Model> Models => Set<Model>();

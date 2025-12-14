@@ -11,13 +11,5 @@ namespace ProyectoFinalTecWeb.Services
         Task DeleteAsync(Guid id);
         Task<IEnumerable<Vehicle>> GetAll();
 
-        /*
-         Task<Guid> CreateAsync(CreateConductorDto dto);
-        Task<IEnumerable<Conductor>> GetAll();
-        Task<Conductor> GetOne(Guid id);
-        Task<Conductor> UpdateConductor(UpdateConductorDto dto, Guid id);
-        Task DeleteConductor(Guid id);
-         */
-
     }
 }

@@ -4,7 +4,7 @@
     {
         public Guid Id { get; set; }
         public string Brand { get; set; }
-        public int year { get; set; }
+        public int Year { get; set; }
 
         // 1:1 Vehicle->Model
         public Guid VehicleId { get; set; }

@@ -179,7 +179,9 @@ namespace ProyectoFinalTecWeb.Services
                 Email = dto.Email,
                 PasswordHash = hashedPassword,
                 Name = dto.Name,
-                Role = dto.Role
+                Role = dto.Role,
+                Licence = dto.Licence,
+                Phone = dto.Phone
             };
             await _drivers.AddAsync(driver);
             return driver.Id.ToString();
@@ -193,6 +195,7 @@ namespace ProyectoFinalTecWeb.Services
                 Email = dto.Email,
                 PasswordHash = hashedPassword,
                 Name = dto.Name,
+                Phone = dto.Phone,
                 Role = dto.Role
             };
             await _passengers.AddAsync(passenger);

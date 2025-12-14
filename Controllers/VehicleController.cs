@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using ProyectoFinalTecWeb.Entities;
 using ProyectoFinalTecWeb.Entities.Dtos.VehicleDto;
 using ProyectoFinalTecWeb.Services;
@@ -26,6 +27,7 @@ namespace ProyectoFinalTecWeb.Controllers
 
         // GET: api/vehicle
         [HttpGet]
+        [Authorize]
         public async Task<IActionResult> GetAllVehicles()
         {
             IEnumerable<Vehicle> items = await _service.GetAll();

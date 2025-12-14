@@ -2,6 +2,7 @@
 using ProyectoFinalTecWeb.Entities;
 using ProyectoFinalTecWeb.Entities.Dtos.DriverDto;
 using ProyectoFinalTecWeb.Repositories;
+using System.ComponentModel.DataAnnotations;
 
 namespace ProyectoFinalTecWeb.Services
 {
@@ -19,7 +20,8 @@ namespace ProyectoFinalTecWeb.Services
 
         public async Task<Guid> CreateAsync(CreateDriverDto dto)
         {
-            var entity = new Driver { Name = dto.Name, Licence = dto.Licence, Phone = dto.Phone, Email = dto.Email };
+            var entity = new Driver { Name = dto.Name, Email = dto.Email, PasswordHash = dto.Password, 
+                Licence = dto.Licence, Phone = dto.Phone  };
             await _drivers.AddAsync(entity);
             await _drivers.SaveChangesAsync();
             return entity.Id;

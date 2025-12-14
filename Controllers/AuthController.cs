@@ -7,7 +7,7 @@ using ProyectoFinalTecWeb.Services;
 namespace ProyectoFinalTecWeb.Controllers
 {
     [ApiController]
-    [Route("api/auth/[Controller]")]
+    [Route("api/auth")]
     public class AuthController : ControllerBase
     {
         private readonly IAuthService _service;
@@ -17,13 +17,15 @@ namespace ProyectoFinalTecWeb.Controllers
         }
         // POST: api/auth/driver
 
-        [HttpPost("register/driver")]
+        [HttpPost("driver")]
         public async Task<IActionResult> RegisterDriver([FromBody] RegisterDriverDto dto)
         {
             var id = await _service.RegisterDriverAsync(dto);
             return CreatedAtAction(nameof(RegisterDriver), new { id }, null);
         }
-        [HttpPost("register/passenger")]
+
+        // POST: api/auth/passenger
+        [HttpPost("passenger")]
         public async Task<IActionResult> RegisterPassenger([FromBody] RegisterPassengerDto dto)
         {
             var id = await _service.RegisterPassengerAsync(dto);
