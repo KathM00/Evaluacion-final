@@ -19,16 +19,6 @@ namespace ProyectoFinalTecWeb.Services
             _configuration = configuration;
         }
 
-
-        public async Task<Guid> CreateAsync(CreateDriverDto dto)
-        {
-            var entity = new Driver { Name = dto.Name, Email = dto.Email, PasswordHash = dto.Password, 
-                Licence = dto.Licence, Phone = dto.Phone};
-            await _drivers.AddAsync(entity);
-            await _drivers.SaveChangesAsync();
-            return entity.Id;
-        }
-
         public async Task DeleteDriver(Guid id)
         {
             Driver? conductor = await _drivers.GetOne(id);

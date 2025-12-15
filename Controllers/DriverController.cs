@@ -36,16 +36,6 @@ namespace ProyectoFinalTecWeb.Controllers
                 return Ok(driver);
             }
 
-            
-
-            // POST: api/driver
-            [HttpPost]
-            public async Task<IActionResult> Create([FromBody] CreateDriverDto dto)
-            {
-                var id = await _service.CreateAsync(dto);
-                return Created($"api/driver/{id}", new { id });
-            }
-
             // PUT: api/driver/{id}
             [HttpPut("{id:guid}")]
             public async Task<IActionResult> UpdateDriver([FromBody] UpdateDriverDto dto, Guid id)

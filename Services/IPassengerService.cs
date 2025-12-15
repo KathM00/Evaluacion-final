@@ -9,7 +9,6 @@ namespace ProyectoFinalTecWeb.Services
         Task<string> RegisterAsync(RegisterPassengerDto dto);
 
         //CRUD
-        Task<Guid> CreateAsync(CreatePassengerDto dto);
         Task<IEnumerable<PassengerDto>> GetAll();
         Task<PassengerDto> GetOne(Guid id);
         Task<IEnumerable<Passenger>> GetAllNormal();

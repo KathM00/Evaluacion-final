@@ -32,15 +32,6 @@ namespace ProyectoFinalTecWeb.Controllers
             return Ok(passenger);
         }
 
-
-        // POST: api/passenger
-        [HttpPost]
-        public async Task<IActionResult> Create([FromBody] CreatePassengerDto dto)
-        {
-            var id = await _service.CreateAsync(dto);
-            return Created($"api/passenger/{id}", new { id });
-        }
-
         // PUT: api/passenger/{id}
         [HttpPut("{id:guid}")]
         public async Task<IActionResult> UpdatePassenger([FromBody] UpdatePassengerDto dto, Guid id)

@@ -4,6 +4,7 @@ using ProyectoFinalTecWeb.Entities;
 using ProyectoFinalTecWeb.Entities.Dtos.VehicleDto;
 using ProyectoFinalTecWeb.Repositories;
 using ProyectoFinalTecWeb.Services;
+using System.Security.Cryptography;
 
 namespace ProyectoFinalTecWeb.Controllers
 {
@@ -26,6 +27,7 @@ namespace ProyectoFinalTecWeb.Controllers
 
         // POST: api/vehicle
         [HttpPost]
+        [Authorize(Policy = "DriverOnly")]
         public async Task<IActionResult> Create([FromBody] CreateVehicleDto dto)
         {
             var id = await _service.CreateAsync(dto);
@@ -34,6 +36,7 @@ namespace ProyectoFinalTecWeb.Controllers
 
         // GET: api/vehicle
         [HttpGet]
+        [Authorize(Policy = "DriverOnly")]
         public async Task<IActionResult> GetAllVehicles()
         {
             IEnumerable<VehicleDto> items = await _service.GetAll();
@@ -42,6 +45,7 @@ namespace ProyectoFinalTecWeb.Controllers
 
         // GET: api/vehicle/{id}
         [HttpGet("{id:guid}")]
+        [Authorize(Policy = "DriverOnly")]
         public async Task<IActionResult> GetById([FromRoute] Guid id)
         {
             var data = await _service.GetByIdAsync(id);
@@ -51,6 +55,7 @@ namespace ProyectoFinalTecWeb.Controllers
 
         // PUT: api/vehicle/{id}
         [HttpPut("{id:guid}")]
+        [Authorize(Policy = "DriverOnly")]
         public async Task<IActionResult> Update([FromRoute] Guid id, [FromBody] UpdateVehicleDto dto)
         {
             if (!ModelState.IsValid) return ValidationProblem(ModelState);
@@ -60,6 +65,7 @@ namespace ProyectoFinalTecWeb.Controllers
 
         // DELETE: api/vehicle/{id}
         [HttpDelete("{id:guid}")]
+        [Authorize(Policy = "DriverOnly")]
         public async Task<IActionResult> Delete([FromRoute] Guid id)
         {
             if (!ModelState.IsValid) return ValidationProblem(ModelState);
@@ -69,6 +75,7 @@ namespace ProyectoFinalTecWeb.Controllers
 
         // POST: api/vehicle/{vehicleId}/drivers/{driverId}
         [HttpPost("{vehicleId:guid}/drivers/{driverId:guid}")]
+        [Authorize(Policy = "DriverOnly")]
         public async Task<IActionResult> AssignDriver(Guid vehicleId, Guid driverId)
         {
             try
@@ -84,6 +91,7 @@ namespace ProyectoFinalTecWeb.Controllers
 
         // DELETE: api/vehicle/{vehicleId}/drivers/{driverId}
         [HttpDelete("{vehicleId:guid}/drivers/{driverId:guid}")]
+        [Authorize(Policy = "DriverOnly")]
         public async Task<IActionResult> RemoveDriver(Guid vehicleId, Guid driverId)
         {
             try

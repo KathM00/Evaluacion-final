@@ -16,7 +16,6 @@ namespace ProyectoFinalTecWeb.Controllers
             _service = service;
         }
         // POST: api/auth/driver
-
         [HttpPost("driver")]
         public async Task<IActionResult> RegisterDriver([FromBody] RegisterDriverDto dto)
         {
@@ -32,6 +31,7 @@ namespace ProyectoFinalTecWeb.Controllers
             return CreatedAtAction(nameof(RegisterPassenger), new { id }, null);
         }
 
+        // POST: api/auth/login
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginDto dto)
         {
@@ -40,6 +40,7 @@ namespace ProyectoFinalTecWeb.Controllers
             return Ok(response);
         }
 
+        // POST: api/auth/refresh
         [HttpPost("refresh")]
         public async Task<IActionResult> Refresh([FromBody] RefreshRequestDto dto)
         {

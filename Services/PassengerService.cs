@@ -6,32 +6,25 @@ namespace ProyectoFinalTecWeb.Services
 {
     public class PassengerService : IPassengerService
     {
-        private readonly IPassengerRepository _pasajeros;
+        private readonly IPassengerRepository _passengers;
         private readonly IConfiguration _configuration;
-        public PassengerService(IPassengerRepository pasajeros, IConfiguration configuration)
+        public PassengerService(IPassengerRepository passengers, IConfiguration configuration)
         {
-            _pasajeros = pasajeros;
+            _passengers = passengers;
             _configuration = configuration;
-        }
-        public async Task<Guid> CreateAsync(CreatePassengerDto dto)
-        {
-            var entity = new Passenger { Name = dto.Name, Phone = dto.Phone, Email = dto.Email };
-            await _pasajeros.AddAsync(entity);
-            await _pasajeros.SaveChangesAsync();
-            return entity.Id;
         }
 
         public async Task DeletePassenger(Guid id)
         {
-            Passenger? pasajero = await _pasajeros.GetOne(id);
-            if (pasajero == null) return;
-            await _pasajeros.Delete(pasajero);
+            Passenger? passenger = await _passengers.GetOne(id);
+            if (passenger == null) return;
+            await _passengers.Delete(passenger);
 
         }
 
         public async Task<IEnumerable<PassengerDto>> GetAll()
         {
-            var passengers = await _pasajeros.GetAllWithTripsAsync();
+            var passengers = await _passengers.GetAllWithTripsAsync();
 
             return passengers.Select(p => new PassengerDto
             {
@@ -51,10 +44,9 @@ namespace ProyectoFinalTecWeb.Services
                 }).ToList()
             });
         }
-
         public async Task<PassengerDto> GetOne(Guid id)
         {
-            var passenger = await _pasajeros.GetByIdWithTripsAsync(id);
+            var passenger = await _passengers.GetByIdWithTripsAsync(id);
             if (passenger == null) return null;
 
             return new PassengerDto
@@ -77,39 +69,37 @@ namespace ProyectoFinalTecWeb.Services
         }
         public async Task<IEnumerable<Passenger>> GetAllNormal()
         {
-            return await _pasajeros.GetAll();
+            return await _passengers.GetAll();
         }
 
         public async Task<Passenger> GetOneNormal(Guid id)
         {
-            return await _pasajeros.GetOne(id);
+            return await _passengers.GetOne(id);
         }
 
-
-        
         public async Task<string> RegisterAsync(RegisterPassengerDto dto)
         {
             var hashedPassword = BCrypt.Net.BCrypt.HashPassword(dto.Password);
-            var pasajero = new Passenger
+            var passenger = new Passenger
             {
                 Email = dto.Email,
                 Name = dto.Name
             };
-            await _pasajeros.AddAsync(pasajero);
-            return pasajero.Id.ToString();
+            await _passengers.AddAsync(passenger);
+            return passenger.Id.ToString();
         }
         
         public async Task<Passenger> UpdatePassenger(UpdatePassengerDto dto, Guid id)
         {
-            Passenger? pasajero = await GetOneNormal(id);
-            if (pasajero == null) throw new Exception("Passenger doesnt exist.");
+            Passenger? passenger = await GetOneNormal(id);
+            if (passenger == null) throw new Exception("Passenger doesnt exist.");
 
-            pasajero.Name = dto.Name;
-            pasajero.Phone = dto.Phone;
-            pasajero.Email = dto.Email;
+            passenger.Name = dto.Name;
+            passenger.Phone = dto.Phone;
+            passenger.Email = dto.Email;
 
-            await _pasajeros.Update(pasajero);
-            return pasajero;
+            await _passengers.Update(passenger);
+            return passenger;
         }
     }
 }

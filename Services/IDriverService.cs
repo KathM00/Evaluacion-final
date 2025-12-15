@@ -9,8 +9,6 @@ namespace ProyectoFinalTecWeb.Services
         Task<string> RegisterAsync(RegisterDriverDto dto);
 
         //CRUD
-        Task<Guid> CreateAsync(CreateDriverDto dto);
-
         Task<IEnumerable<DriverDto>> GetAll();
         Task<DriverDto> GetOne(Guid id);
         Task<IEnumerable<Driver>> GetAllNormal();
