@@ -17,7 +17,7 @@ namespace ProyectoFinalTecWeb.Entities
         public ICollection<Trip> Trips { get; set; } = new List<Trip>();
 
         // Auth Verification
-        public string PasswordHash { get; set; }
+        public string PasswordHash { get; set; } = string.Empty;
         public string Role { get; set; } = "Driver"; //"Passenger" | "Driver"
         public string? RefreshToken { get; set; }
         public DateTime? RefreshTokenExpiresAt { get; set; }

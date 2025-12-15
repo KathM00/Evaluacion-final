@@ -4,6 +4,6 @@ namespace ProyectoFinalTecWeb.Entities.Dtos.VehicleDto
 {
     public class UpdateVehicleDto
     {
-        public string Plate { get; set; }
+        public string Plate { get; set; } = default!;
     }
 }

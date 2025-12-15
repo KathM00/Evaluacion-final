@@ -7,6 +7,6 @@ namespace ProyectoFinalTecWeb.Entities.Dtos.VehicleDto
         [Required]
         public Guid ModelId { get; set; }
         [Required]
-        public string Plate { get; set; }
+        public string Plate { get; set; } = string.Empty;
     }
 }

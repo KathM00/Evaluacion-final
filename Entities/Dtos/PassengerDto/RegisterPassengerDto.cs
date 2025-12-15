@@ -2,10 +2,10 @@
 {
     public class RegisterPassengerDto
     {
-        public string Name { get; init; }
-        public string Email { get; init; }
-        public string Password { get; init; }
-        public string Phone { get; set; }
+        public string Name { get; init; } = default!;
+        public string Email { get; init; } = default!;
+        public string Password { get; init; } = default!;
+        public string Phone { get; set; } = default!;
         public string Role { get; set; } = "Passenger";
     }
 }

@@ -5,9 +5,9 @@ namespace ProyectoFinalTecWeb.Entities.Dtos.TripDto
     public class CreateTripDto
     {
         [Required]
-        public string Origin { get; set; }
+        public string Origin { get; set; } = string.Empty;
         [Required]
-        public string Destiny { get; set; }
+        public string Destiny { get; set; } = string.Empty;
         [Required]
         public int Price { get; set; }
         [Required]
