@@ -28,7 +28,7 @@ namespace ProyectoFinalTecWeb.Controllers
         }
 
         // GET: api/trip/{id}/passenger
-        [HttpGet("{id:Guid}/passenger")]
+        [HttpGet("passenger/{id:Guid}")]
         public async Task<IActionResult> GetPassenger([FromRoute] Guid id)
         {
             var data = await _passenger.GetOne(id);
@@ -37,7 +37,7 @@ namespace ProyectoFinalTecWeb.Controllers
         }
 
         // GET: api/trip/{id}/driver
-        [HttpGet("{id:Guid}/driver")]
+        [HttpGet("driver/{id:Guid}")]
         public async Task<IActionResult> GetDriver([FromRoute] Guid id)
         {
             var data = await _driver.GetOne(id);
@@ -45,7 +45,13 @@ namespace ProyectoFinalTecWeb.Controllers
             return Ok(data);
         }
 
-
+        // GET: api/trip
+        [HttpGet]
+        public async Task<IActionResult> GetAll()
+        {
+            var trips = await _service.GetAllAsync();
+            return Ok(trips);
+        }
 
     }
 }

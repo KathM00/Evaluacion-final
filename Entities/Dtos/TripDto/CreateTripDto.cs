@@ -14,5 +14,10 @@ namespace ProyectoFinalTecWeb.Entities.Dtos.TripDto
         public DateTime StartDate { get; set; }
         [Required]
         public DateTime EndDate { get; set; }
+        [Required]
+        public Guid PassengerId { get; set; }
+        [Required]
+        public Guid DriverId { get; set; }
+
     }
 }

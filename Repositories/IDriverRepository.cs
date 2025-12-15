@@ -10,6 +10,9 @@ namespace ProyectoFinalTecWeb.Repositories
         Task<bool> ExistsAsync(Guid id);
         Task<int> SaveChangesAsync();
 
+        Task<Driver?> GetByIdWithTripsAsync(Guid id);
+        Task<Driver?> GetByIdWithVehiclesAsync(Guid id);
+
         //CRUD
         Task AddAsync(Driver driver);
         Task<IEnumerable<Driver>> GetAll();

@@ -11,10 +11,12 @@ namespace ProyectoFinalTecWeb.Controllers
         {
             private readonly IDriverService _service;
             private readonly ITripService _trips;
-            public DriverController(IDriverService service, ITripService trips)
+        private readonly IDriverVehicleService _driverVehicleService;
+            public DriverController(IDriverService service, ITripService trips, IDriverVehicleService driverVehicle)
             {
                 _service = service;
                 _trips = trips;
+                _driverVehicleService = driverVehicle;
             }
 
             // GET: api/driver
@@ -69,5 +71,13 @@ namespace ProyectoFinalTecWeb.Controllers
             }
             */
 
-        }
+            // GET: api/driver/{driverId}/vehicles
+            [HttpGet("{driverId:guid}/vehicles")]
+            public async Task<IActionResult> GetVehiclesByDriver(Guid driverId)
+            {
+                var vehicles = await _driverVehicleService.GetVehiclesByDriver(driverId);
+                return Ok(vehicles);
+            }
+
+    }
 }

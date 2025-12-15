@@ -6,6 +6,7 @@ namespace ProyectoFinalTecWeb.Repositories
     {
         Task<bool> ExistsAsync(Guid id);
         Task<int> SaveChangesAsync();
+        Task<Model?> GetByIdWithVehicleAsync(Guid id);
 
         //CRUD
         Task AddAsync(Model model);

@@ -16,7 +16,18 @@ namespace ProyectoFinalTecWeb.Repositories
             _ctx.Trips.AnyAsync(s => s.Id == id);
 
         public Task<Trip?> GetTripAsync(Guid id) =>
-            _ctx.Trips.FirstOrDefaultAsync(s => s.Id == id);
+            _ctx.Trips
+           .Include(t => t.Passenger)
+           .Include(t => t.Driver)
+           .FirstOrDefaultAsync(t => t.Id == id);
+
+        public async Task<IEnumerable<Trip>> GetAllAsync()
+        {
+            return await _ctx.Trips
+                .Include(t => t.Passenger)
+                .Include(t => t.Driver)
+                .ToListAsync();
+        }
 
         public Task<int> SaveChangesAsync() => _ctx.SaveChangesAsync();
     }

@@ -26,7 +26,10 @@ namespace ProyectoFinalTecWeb.Repositories
 
         public async Task<IEnumerable<Driver>> GetAll()
         {
-            return await _ctx.Drivers.ToListAsync();
+            return await _ctx.Drivers
+                .Include(d => d.Vehicles)
+                .Include(d => d.Trips)
+                .ToListAsync();
         }
 
         public Task<Driver?> GetByEmailAddress(string email) =>
@@ -37,10 +40,21 @@ namespace ProyectoFinalTecWeb.Repositories
 
         public async Task<Driver?> GetOne(Guid id)
         {
+            return await _ctx.Drivers.FirstOrDefaultAsync(x => x.Id == id);
+        }
+
+        public async Task<Driver?> GetByIdWithTripsAsync(Guid id)
+        {
             return await _ctx.Drivers
-            .Include(c => c.Trips)
-            .Include(c => c.Vehicles)
-            .FirstOrDefaultAsync(x => x.Id == id);
+                .Include(d => d.Trips)
+                .FirstOrDefaultAsync(d => d.Id == id);
+        }
+
+        public async Task<Driver?> GetByIdWithVehiclesAsync(Guid id)
+        {
+            return await _ctx.Drivers
+                .Include(d => d.Vehicles)
+                .FirstOrDefaultAsync(d => d.Id == id);
         }
 
         public async Task<Driver?> GetTripsAsync(Guid id)

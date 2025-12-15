@@ -52,7 +52,7 @@ builder.Services.AddScoped<ITripService, TripService>();
 builder.Services.AddScoped<IVehicleService, VehicleService>();
 builder.Services.AddScoped<IModelService, ModelService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
-
+builder.Services.AddScoped<IDriverVehicleService, DriverVehicleService>();
 
 builder.Services.AddControllers()
     .AddJsonOptions(options =>

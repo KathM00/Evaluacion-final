@@ -39,6 +39,13 @@ namespace ProyectoFinalTecWeb.Repositories
             return await _ctx.Passengers.FirstOrDefaultAsync(x => x.Id == id);
         }
 
+        public async Task<Passenger?> GetByIdWithTripsAsync(Guid id)
+        {
+            return await _ctx.Passengers
+                .Include(p => p.Trips)
+                .FirstOrDefaultAsync(p => p.Id == id);
+        }
+
         public Task<Passenger?> GetTripsAsync(Guid id) =>
             _ctx.Passengers
                 .Include(s => s.Trips)

@@ -7,6 +7,7 @@ namespace ProyectoFinalTecWeb.Repositories
         Task AddAsync(Trip trip);
         Task<Trip?> GetTripAsync(Guid id);
         Task<bool> ExistsAsync(Guid id);
+        Task<IEnumerable<Trip>> GetAllAsync();
         Task<int> SaveChangesAsync();
     }
 }

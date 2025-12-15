@@ -13,6 +13,12 @@ namespace ProyectoFinalTecWeb.Repositories
             _ctx.Models.Add(model);
             await _ctx.SaveChangesAsync();
         }
+        public async Task<Model?> GetByIdWithVehicleAsync(Guid id)
+        {
+            return await _ctx.Models
+                .Include(m => m.Vehicle)
+                .FirstOrDefaultAsync(m => m.Id == id);
+        }
 
         public async Task Delete(Model model)
         {

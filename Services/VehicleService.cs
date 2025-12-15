@@ -18,15 +18,14 @@ namespace ProyectoFinalTecWeb.Services
         }
         public async Task<Guid> CreateAsync(CreateVehicleDto dto)
         {
-            // Verificar que el Model existe
-            var model = await _models.GetByIdAsync(dto.ModelId);
+            // Verificar que el Model existe - INCLUYENDO su Vehicle
+            var model = await _models.GetByIdWithVehicleAsync(dto.ModelId);
             if (model == null)
                 throw new Exception($"Model with ID {dto.ModelId} not found");
 
             // Verificar que el Model no tenga ya un Vehicle (1:1)
-            var existingVehicle = await _vehicles.GetByIdAsync(dto.ModelId);
-            if (existingVehicle != null)
-                throw new Exception($"Model with ID {dto.ModelId} is already assigned to a vehicle");
+            if (model.Vehicle != null)
+                throw new Exception($"Model with ID {dto.ModelId} is already assigned to vehicle with ID {model.Vehicle.Id}");
 
             // Crear el Vehicle
             var entity = new Vehicle
@@ -38,9 +37,9 @@ namespace ProyectoFinalTecWeb.Services
             await _vehicles.AddAsync(entity);
             await _vehicles.SaveChangesAsync();
 
-            // Actualizar la relación bidireccional
-            model.Vehicle = entity;
-            await _models.SaveChangesAsync();
+            // Actualizar la relación bidireccional (opcional si ya se actualizó automáticamente)
+            // model.Vehicle = entity;
+            // await _models.SaveChangesAsync();
 
             return entity.Id;
         }
