@@ -7,7 +7,7 @@ namespace ProyectoFinalTecWeb.Entities
         public Guid Id { get; set; }
         public string Name { get; set; } = default!;
         public string Licence { get; set; } = default!;
-        public string Phone { get; set; }
+        public string Phone { get; set; } = default!;
         public string Email { get; set; } = string.Empty;
 
         // N:M Driver -> Vehicle
@@ -18,7 +18,7 @@ namespace ProyectoFinalTecWeb.Entities
 
         // Auth Verification
         public string PasswordHash { get; set; }
-        public string Role { get; set; } = "Driver"; //"User" | "Admin" //Driver //Passenger
+        public string Role { get; set; } = "Driver"; //"Passenger" | "Driver"
         public string? RefreshToken { get; set; }
         public DateTime? RefreshTokenExpiresAt { get; set; }
         public DateTime? RefreshTokenRevokedAt { get; set; }

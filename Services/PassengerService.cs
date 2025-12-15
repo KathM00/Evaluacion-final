@@ -32,6 +32,7 @@ namespace ProyectoFinalTecWeb.Services
                 Name = p.Name,
                 Phone = p.Phone,
                 Email = p.Email,
+                PasswordHash = p.PasswordHash,
                 Role = p.Role,
                 Trips = p.Trips.Select(t => new TripSimpleDto
                 {
@@ -55,6 +56,7 @@ namespace ProyectoFinalTecWeb.Services
                 Name = passenger.Name,
                 Phone = passenger.Phone,
                 Email = passenger.Email,
+                PasswordHash = passenger.PasswordHash,
                 Role = passenger.Role,
                 Trips = passenger.Trips.Select(t => new TripSimpleDto
                 {

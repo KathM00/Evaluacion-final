@@ -2,8 +2,6 @@ using DotNetEnv;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-//using Microsoft.AspNetCore.Authentication.JwtBearer;
-//using Microsoft.IdentityModel.Tokens;
 using Npgsql;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Infrastructure;
 using ProyectoFinalTecWeb.Data;
@@ -14,8 +12,13 @@ using System.Text;
 using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
+Env.Load();
 
-// Add services to the container.
+var port = Environment.GetEnvironmentVariable("PORT");
+if (!string.IsNullOrEmpty(port))
+{
+    builder.WebHost.UseUrls($"http://0.0.0.0:{port}");
+}
 
 builder.Services.AddControllers();
 builder.Services.AddOpenApi();
@@ -27,10 +30,33 @@ builder.Services.AddCors(opt =>
         .AllowAnyMethod());
 });
 
+var jwtKey = Environment.GetEnvironmentVariable("JWT_KEY");
+var jwtIssuer = Environment.GetEnvironmentVariable("JWT_ISSUER");
+var jwtAudience = Environment.GetEnvironmentVariable("JWT_AUDIENCE");
+var keyBytes = Convert.FromBase64String(jwtKey!);
+
+builder.Services
+    .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(o =>
+    {
+        o.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = jwtIssuer,
+            ValidAudience = jwtAudience,
+            IssuerSigningKey = new SymmetricSecurityKey(keyBytes),
+            RoleClaimType = ClaimTypes.Role,
+            ClockSkew = TimeSpan.Zero
+        };
+    });
 
 builder.Services.AddAuthorization(options =>
 {
     options.AddPolicy("DriverOnly", p => p.RequireRole("Driver"));
+    options.AddPolicy("PassengerOnly", p => p.RequireRole("Passenger"));
 });
 
 // JWT Authentication
@@ -38,7 +64,6 @@ var jwtSection = builder.Configuration.GetSection("Jwt");
 var key = jwtSection["Key"] ?? throw new Exception("JWT Key is missing");
 var issuer = jwtSection["Issuer"];
 var audience = jwtSection["Audience"];
-
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
@@ -53,28 +78,60 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key))
         };
     });
-
 builder.Services.AddAuthorization();
 
-builder.Services.AddDbContext<AppDbContext>(opt =>
-    opt.UseNpgsql(builder.Configuration.GetConnectionString("Default")));
+var connectionString = Environment.GetEnvironmentVariable("DATABASE_URL");
 
+if (!string.IsNullOrEmpty(connectionString) &&
+    (connectionString.StartsWith("postgres://") || connectionString.StartsWith("postgresql://")))
+{
+    var uri = new Uri(connectionString);
 
+    var userInfo = uri.UserInfo.Split(':', 2);
+    var user = Uri.UnescapeDataString(userInfo[0]);
+    var pass = userInfo.Length > 1 ? Uri.UnescapeDataString(userInfo[1]) : "";
+
+    var builderCs = new NpgsqlConnectionStringBuilder
+    {
+        Host = uri.Host,
+        Port = uri.Port,
+        Username = user,
+        Password = pass,
+        Database = uri.AbsolutePath.Trim('/'),
+        SslMode = SslMode.Require,
+        TrustServerCertificate = true
+    };
+
+    connectionString = builderCs.ConnectionString;
+}
+
+if (string.IsNullOrEmpty(connectionString))
+{
+    Console.WriteLine("Using local database configuration.");
+    // fallback local si quieres
+    var dbName = Environment.GetEnvironmentVariable("POSTGRES_DB");
+    var dbUser = Environment.GetEnvironmentVariable("POSTGRES_USER");
+    var dbPass = Environment.GetEnvironmentVariable("POSTGRES_PASSWORD");
+    var dbHost = Environment.GetEnvironmentVariable("POSTGRES_HOST") ?? "localhost";
+    var dbPort = Environment.GetEnvironmentVariable("POSTGRES_PORT") ?? "5432";
+
+    connectionString = $"Host={dbHost};Port={dbPort};Database={dbName};Username={dbUser};Password={dbPass}";
+}
 /*
 builder.Services.AddDbContext<AppDbContext>(opt =>
-    opt.UseSqlite(builder.Configuration.GetConnectionString("Default")));
-builder.Services.AddScoped<IViajeRepository, ViajeRepository>();
-builder.Services.AddScoped<IViajeService, ViajeService>();
-¨*/
+    opt.UseNpgsql(builder.Configuration.GetConnectionString("Default")));
+*/
+builder.Services.AddDbContext<AppDbContext>(opt =>
+    opt.UseNpgsql(connectionString));
 
-// 4. REPOSITORIES
+// REPOSITORIES
 builder.Services.AddScoped<IDriverRepository, DriverRepository>();
 builder.Services.AddScoped<IPassengerRepository, PassengerRepository>();
 builder.Services.AddScoped<ITripRepository, TripRepository>();
 builder.Services.AddScoped<IVehicleRepository, VehicleRepository>();
 builder.Services.AddScoped<IModelRepository, ModelRepository>();
 
-// 5. SERVICES
+// SERVICES
 builder.Services.AddScoped<IDriverService, DriverService>();
 builder.Services.AddScoped<IPassengerService, PassengerService>();
 builder.Services.AddScoped<ITripService, TripService>();

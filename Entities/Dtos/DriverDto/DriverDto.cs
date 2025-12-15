@@ -9,9 +9,8 @@ namespace ProyectoFinalTecWeb.Entities.Dtos.DriverDto
         public string Licence { get; set; } = default!;
         public string Phone { get; set; }
         public string Email { get; set; } = string.Empty;
+        public string PasswordHash { get; set; }
         public string Role { get; set; } = "Driver";
-
-        // Solo información básica
         public List<TripSimpleDto> Trips { get; set; } = new();
         public List<VehicleSimpleDto> Vehicles { get; set; } = new();
     }
@@ -22,6 +21,5 @@ namespace ProyectoFinalTecWeb.Entities.Dtos.DriverDto
         public string Plate { get; set; }
         public string ModelBrand { get; set; }
         public int ModelYear { get; set; }
-        // NO incluir Drivers aquí
     }
 }

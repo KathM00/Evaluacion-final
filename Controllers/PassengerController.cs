@@ -50,15 +50,5 @@ namespace ProyectoFinalTecWeb.Controllers
             return NoContent();
         }
 
-
-        /*
-        [HttpPost("register")]
-        public async Task<IActionResult> Register([FromBody] RegisterPassengerDto dto)
-        {
-            var id = await _service.RegisterAsync(dto);
-            return CreatedAtAction(nameof(Register), new { id }, null);
-        }
-        */
-
     }
 }

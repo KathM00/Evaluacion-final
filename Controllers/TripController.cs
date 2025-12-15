@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using ProyectoFinalTecWeb.Entities.Dtos.TripDto;
 using ProyectoFinalTecWeb.Services;
 
@@ -29,6 +30,7 @@ namespace ProyectoFinalTecWeb.Controllers
 
         // GET: api/trip/{id}/passenger
         [HttpGet("passenger/{id:Guid}")]
+        [Authorize(Policy = "PassengerOnly")]
         public async Task<IActionResult> GetPassenger([FromRoute] Guid id)
         {
             var data = await _passenger.GetOne(id);

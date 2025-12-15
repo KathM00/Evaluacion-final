@@ -4,7 +4,7 @@
     public class Vehicle
     {
         public Guid Id { get; set; }
-        public string Plate { get; set; }
+        public string Plate { get; set; } = default!;
 
         // N:M vechicle -> driver
         public ICollection<Driver> Drivers { get; set; } = new List<Driver>();

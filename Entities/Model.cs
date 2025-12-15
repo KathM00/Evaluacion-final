@@ -3,7 +3,7 @@
     public class Model
     {
         public Guid Id { get; set; }
-        public string Brand { get; set; }
+        public string Brand { get; set; } = default!;
         public int Year { get; set; }
 
         // 1:1 Vehicle->Model

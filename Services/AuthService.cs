@@ -29,10 +29,9 @@ namespace ProyectoFinalTecWeb.Services
 
         public async Task<(bool ok, LoginResponseDto? response)> LoginAsync(LoginDto dto)
         {
+            // Primero buscar driver
             var driver = await _drivers.GetByEmailAddress(dto.Email);
-            if (driver == null) return (false, null);
-
-            if(driver != null)
+            if (driver != null)
             {
                 var ok = BCrypt.Net.BCrypt.Verify(dto.Password, driver.PasswordHash);
                 if (!ok) return (false, null);
@@ -62,9 +61,8 @@ namespace ProyectoFinalTecWeb.Services
                 return (true, resp);
             }
 
+            // Si no es driver, buscar passenger
             var passenger = await _passengers.GetByEmailAddress(dto.Email);
-            if (passenger == null) return (false, null);
-
             if (passenger != null)
             {
                 var ok = BCrypt.Net.BCrypt.Verify(dto.Password, passenger.PasswordHash);
@@ -95,16 +93,15 @@ namespace ProyectoFinalTecWeb.Services
                 return (true, resp);
             }
 
-            throw new Exception("User not found");
+            // Si no es ni driver ni passenger
             return (false, null);
         }
 
         public async Task<(bool ok, LoginResponseDto? response)> RefreshAsync(RefreshRequestDto dto)
         {
-            // Buscar usuario que tenga ese refresh token (simple)
+            // Buscar driver con el refresh token
             var driver = await _drivers.GetByRefreshToken(dto.RefreshToken);
-            if (driver == null) return (false, null);
-            if(driver != null)
+            if (driver != null)
             {
                 // Validaciones de refresh
                 if (driver.RefreshToken != dto.RefreshToken) return (false, null);
@@ -134,9 +131,9 @@ namespace ProyectoFinalTecWeb.Services
 
                 return (true, resp);
             }
-            // Buscar usuario que tenga ese refresh token (simple)
+
+            // Buscar passenger con el refresh token
             var passenger = await _passengers.GetByRefreshToken(dto.RefreshToken);
-            if (passenger == null) return (false, null);
             if (passenger != null)
             {
                 // Validaciones de refresh
@@ -151,7 +148,7 @@ namespace ProyectoFinalTecWeb.Services
 
                 passenger.RefreshToken = newRefresh;
                 passenger.RefreshTokenExpiresAt = DateTime.UtcNow.AddDays(refreshDays);
-                passenger.RefreshTokenRevokedAt = null; // seguimos activo
+                passenger.RefreshTokenRevokedAt = null;
                 passenger.CurrentJwtId = jti;
                 await _passengers.Update(passenger);
 

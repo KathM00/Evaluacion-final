@@ -6,9 +6,8 @@
         public string Name { get; set; }
         public string Phone { get; set; }
         public string Email { get; set; } = string.Empty;
+        public string PasswordHash { get; set; }
         public string Role { get; set; }
-
-        // Solo información básica de los trips, sin anidar
         public List<TripSimpleDto> Trips { get; set; } = new();
     }
 
@@ -20,6 +19,5 @@
         public int Price { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
-        // NO incluir Passenger ni Driver aquí
     }
 }

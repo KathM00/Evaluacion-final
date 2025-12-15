@@ -21,9 +21,9 @@ namespace ProyectoFinalTecWeb.Services
 
         public async Task DeleteDriver(Guid id)
         {
-            Driver? conductor = await _drivers.GetOne(id);
-            if (conductor == null) return;
-            await _drivers.Delete(conductor);
+            Driver? driver = await _drivers.GetOne(id);
+            if (driver == null) return;
+            await _drivers.Delete(driver);
         }
 
         public async Task<IEnumerable<DriverDto>> GetAll()
@@ -37,6 +37,7 @@ namespace ProyectoFinalTecWeb.Services
                 Email = d.Email,
                 Licence = d.Licence,
                 Phone = d.Phone,
+                PasswordHash = d.PasswordHash,
                 Role = d.Role,
                 // Mapear Trips
                 Trips = d.Trips?.Select(t => new TripSimpleDto
@@ -71,6 +72,7 @@ namespace ProyectoFinalTecWeb.Services
                 Email = driver.Email,
                 Licence = driver.Licence,
                 Phone = driver.Phone,
+                PasswordHash = driver.PasswordHash,
                 Role = driver.Role,
                 // Mapear Trips
                 Trips = driver.Trips?.Select(t => new TripSimpleDto
@@ -107,27 +109,27 @@ namespace ProyectoFinalTecWeb.Services
         public async Task<string> RegisterAsync(RegisterDriverDto dto)
         {
             var hashedPassword = BCrypt.Net.BCrypt.HashPassword(dto.Password);
-            var conductor = new Driver
+            var driver = new Driver
             {
                 Email = dto.Email,
                 Name = dto.Name
             };
-            await _drivers.AddAsync(conductor);
-            return conductor.Id.ToString();
+            await _drivers.AddAsync(driver);
+            return driver.Id.ToString();
         }
         
         public async Task<Driver> UpdateDriver(UpdateDriverDto dto, Guid id)
         {
-            Driver? conductor = await GetOneNormal(id);
-            if (conductor == null) throw new Exception("Driver doesnt exist.");
+            Driver? driver = await GetOneNormal(id);
+            if (driver == null) throw new Exception("Driver doesnt exist.");
 
-            conductor.Name = dto.Name;
-            conductor.Licence = dto.Licence;
-            conductor.Phone = dto.Phone;
-            conductor.Email = dto.Email;
+            driver.Name = dto.Name;
+            driver.Licence = dto.Licence;
+            driver.Phone = dto.Phone;
+            driver.Email = dto.Email;
 
-            await _drivers.Update(conductor);
-            return conductor;
+            await _drivers.Update(driver);
+            return driver;
         }
 
         // Método para obtener Driver con toda la información (incluyendo relaciones)
