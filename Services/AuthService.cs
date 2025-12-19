@@ -1,11 +1,11 @@
-﻿using ProyectoFinalTecWeb.Entities.Dtos.Auth;
+﻿using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
+using ProyectoFinalTecWeb.Entities;
+using ProyectoFinalTecWeb.Entities.Dtos.Auth;
 using ProyectoFinalTecWeb.Entities.Dtos.DriverDto;
 using ProyectoFinalTecWeb.Entities.Dtos.PassengerDto;
 using ProyectoFinalTecWeb.Repositories;
-
-using Microsoft.Extensions.Configuration;
-using Microsoft.IdentityModel.Tokens;
-using ProyectoFinalTecWeb.Entities;
+using System.Collections.Concurrent;
 using System.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -19,6 +19,7 @@ namespace ProyectoFinalTecWeb.Services
         private readonly IDriverRepository _drivers;
         private readonly IPassengerRepository _passengers;
         private readonly IConfiguration _configuration;
+        private static readonly ConcurrentDictionary<string, PasswordResetInfo> _resetTokens = new();
 
         public AuthService(IDriverRepository drivers, IPassengerRepository passengers, IConfiguration configuration)
         {
@@ -275,5 +276,68 @@ namespace ProyectoFinalTecWeb.Services
             var bytes = RandomNumberGenerator.GetBytes(64);
             return Base64UrlEncoder.Encode(bytes);
         }
+
+        public async Task<(bool ok, string token)> ForgotPasswordAsync(ForgotPasswordDto dto)
+        {
+
+            var driver = await _drivers.GetByEmailAddress(dto.Email);
+            var passenger = await _passengers.GetByEmailAddress(dto.Email);
+
+            if (driver == null && passenger == null) return (false, string.Empty);
+
+            //Generar token: Minutos transcurridos del día
+            var now = DateTime.Now;
+            int minutesToken = (now.Hour * 60) + now.Minute;
+            string tokenString = minutesToken.ToString();
+
+            var resetInfo = new PasswordResetInfo
+            {
+                Email = dto.Email,
+                CreatedAt = DateTime.UtcNow
+            };
+
+            _resetTokens[tokenString] = resetInfo;
+
+            return (true, tokenString);
+        }
+
+        public async Task<bool> ResetPasswordAsync(ResetPasswordDto dto)
+        {
+
+            if (!_resetTokens.TryGetValue(dto.Token, out var info))
+                return false;
+
+            //Validar tiempo: máximo 15 minutos
+            var timeElapsed = DateTime.UtcNow - info.CreatedAt;
+            if (timeElapsed.TotalMinutes > 15)
+            {
+                _resetTokens.TryRemove(dto.Token, out _);
+                return false;
+            }
+
+            //Buscar al usuario por el email guardado en el token
+            var driver = await _drivers.GetByEmailAddress(info.Email);
+            var passenger = await _passengers.GetByEmailAddress(info.Email);
+
+            string newHash = BCrypt.Net.BCrypt.HashPassword(dto.NewPassword);
+
+            //Actualizar password 
+            if (driver != null)
+            {
+                driver.PasswordHash = newHash;
+                await _drivers.Update(driver);
+            }
+            else if (passenger != null)
+            {
+                passenger.PasswordHash = newHash;
+                await _passengers.Update(passenger);
+            }
+            else return false;
+
+            _resetTokens.TryRemove(dto.Token, out _);
+
+            return true;
+        }
+
     }
 }
